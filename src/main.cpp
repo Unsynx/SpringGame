@@ -9,7 +9,7 @@ int main()
 {
 	SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(480, 360, "Nik's Game");
-	SetTargetFPS(60);
+	SetTargetFPS(20);
 
 	Planet* planetPointer = new Planet(50, (Vector2){240, 180});
 	Planet* planetPointer2 = new Planet(200, (Vector2){0, 0});
@@ -21,6 +21,7 @@ int main()
 			DrawFPS(12, 12);
 			planetPointer->draw();
 			planetPointer2->draw();
+			planetPointer->changeOffset(0, 1);
 
 		EndDrawing();
 	}

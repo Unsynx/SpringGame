@@ -15,4 +15,5 @@ private:
 public:
     Planet(int size, Vector2 position);
     void draw();
+    void changeOffset(int node, int change);
 };
