@@ -28,7 +28,8 @@ void Planet::draw() {
         angle = PI * (changeInDeg * i) / 180;
         points[i] = (Vector2){ 
             position.x + (baseSize + nodeOffsets[i]) * cos(angle), 
-            position.y - (baseSize + nodeOffsets[i]) * sin(angle) };
+            position.y - (baseSize + nodeOffsets[i]) * sin(angle) 
+        };
     }
 
     // Draw the triangle fan with the given color
@@ -39,3 +40,4 @@ void Planet::draw() {
 void Planet::changeOffset(int node, int change) {
     nodeOffsets[node] = nodeOffsets[node] + change;
 }
+
