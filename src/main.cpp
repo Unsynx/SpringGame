@@ -11,7 +11,8 @@ int main()
 	InitWindow(480, 360, "Nik's Game");
 	SetTargetFPS(60);
 
-	Planet* planetPointer = new Planet(5, 100);
+	Planet* planetPointer = new Planet(50, (Vector2){240, 180});
+	Planet* planetPointer2 = new Planet(200, (Vector2){0, 0});
 	
 	while (!WindowShouldClose()) {
 
@@ -19,6 +20,7 @@ int main()
 			ClearBackground(RAYWHITE);
 			DrawFPS(12, 12);
 			planetPointer->draw();
+			planetPointer2->draw();
 
 		EndDrawing();
 	}
