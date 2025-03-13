@@ -45,7 +45,7 @@ void Planet::changeOffset(int node, int change) {
     updateNodePositions();
 }
 
-PlanetPoint Planet::planetToWorldCords(float planetPos) {
+Orientation Planet::planetToWorldCords(float planetPos) {
     planetPos = planetPos - floor(planetPos);
 
     int startNode = (int)floor(nodeCount * planetPos);
@@ -65,7 +65,7 @@ PlanetPoint Planet::planetToWorldCords(float planetPos) {
     Vector2 offset = Vector2Scale(direction, distanceAlongSegment);
 
     // Return world position
-    PlanetPoint result;
+    Orientation result;
     result.position = Vector2Add(nodePositions[startNode], offset);
     result.centerDirection = Vector2Normalize(Vector2Subtract(result.position, position));
     result.surfaceNormal = Vector2Rotate(direction, PI / 2);

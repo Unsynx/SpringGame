@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Planet.h"
+#include "Player.h"
 
 int main()
 {
@@ -13,44 +14,35 @@ int main()
 	Planet* planetPointer = new Planet(50, (Vector2){240, 180});
 	Planet* planetPointer2 = new Planet(200, (Vector2){0, 0});
 
-	Vector2 player = { 0, 0 };
 	Camera2D camera = { 0 };
-	camera.target = player;
 	camera.zoom = 1.0f;
+	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
 
-	float planetPos = 0;
+	Player player(planetPointer2, camera);
 	
 	while (!WindowShouldClose()) {
 		// Update
-		if (IsKeyDown(KEY_RIGHT)) player.x += 2;
-        else if (IsKeyDown(KEY_LEFT)) player.x -= 2;
-		if (IsKeyDown(KEY_UP)) player.y -= 2;
-        else if (IsKeyDown(KEY_DOWN)) player.y += 2;
-
-		camera.target = player;
-		planetPos += 0.001;
+		player.update();
 
 
 		// Rendering
 		BeginDrawing();
 			ClearBackground(RAYWHITE);
 			
+			// Camera
 			BeginMode2D(camera);
-
 				planetPointer->draw();
 				planetPointer2->draw();
-				PlanetPoint point = planetPointer2->planetToWorldCords(planetPos);
-				Vector2 pos = point.position;
-				// DrawCircle(pos.x, pos.y, 10, BLACK);
+				player.draw();
 
-				DrawLineEx(pos, Vector2Add(pos, point.centerDirection * 50), 3, GREEN);
-				DrawLineEx(pos, Vector2Add(pos, point.surfaceNormal * 50), 3, BLUE);
+				Vector2 playerPos = player.getPosition();
+				
 				
 			EndMode2D();
 
+			// UI
 			DrawFPS(12, 12);
-			DrawText(TextFormat("Planet Ps: %f", planetPos), 16, 36, 12, BLACK);
-			DrawText(TextFormat("Position: x-%f y-%f", pos.x, pos.y), 16, 70, 12, BLACK);
+			DrawText(TextFormat("Player: %f %f", playerPos.x, playerPos.y), 12, 36, 16, BLACK);
 
 		EndDrawing();
 	}

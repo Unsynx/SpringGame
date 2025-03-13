@@ -2,10 +2,9 @@
 
 #include <raylib.h>
 #include <raymath.h>
-#include <raymath.h>
 #include <vector>
 
-struct PlanetPoint {
+struct Orientation {
     Vector2 position;
     Vector2 surfaceNormal;
     Vector2 centerDirection;
@@ -24,5 +23,5 @@ public:
     void updateNodePositions();
     void draw();
     void changeOffset(int node, int change);
-    PlanetPoint planetToWorldCords(float planetPos);
+    Orientation planetToWorldCords(float planetPos);
 };
