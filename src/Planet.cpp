@@ -29,8 +29,8 @@ void Planet::updateNodePositions() {
     float changeInDeg = 360 / (float)(nodeCount - 2);
     for (int i = 1; i < nodeCount; i++) {
         nodePositions[i] = (Vector2){ 
-            position.x + (baseSize + nodeOffsets[i - 1]) * cos(angle), 
-            position.y - (baseSize + nodeOffsets[i - 1]) * sin(angle) 
+            position.x + (baseSize + nodeOffsets[i]) * cos(angle), 
+            position.y - (baseSize + nodeOffsets[i]) * sin(angle) 
         };
         TraceLog(LOG_INFO, TextFormat("%i @ angle: %f", i, angle));
         angle = PI * (changeInDeg * i) / 180;
