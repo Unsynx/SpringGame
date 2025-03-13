@@ -20,6 +20,7 @@ struct Segment {
 class Planet {
 private:
     static const int NODE_PER_SURFACE_LENGTH = 15;
+    static const int CORE_SIZE = 20;
     int nodeCount;
     std::vector<int> nodeOffsets;
     std::vector<Vector2> nodePositions;

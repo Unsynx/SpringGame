@@ -63,7 +63,7 @@ void Planet::draw() {
 }
 
 void Planet::changeOffset(int node, int change) {
-    nodeOffsets[node] = nodeOffsets[node] + change;
+    nodeOffsets[node] = fmax(nodeOffsets[node] + change, CORE_SIZE - baseSize);
     updateNodePositions();
 }
 
