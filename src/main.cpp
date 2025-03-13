@@ -44,6 +44,9 @@ int main()
 				planetPointer2->changeOffset(seg.endNode, change);
 
 				Vector2 playerPos = player.getPosition();
+
+				Vector2 node0 = planetPointer2->getNodePosition(0);
+				DrawCircle(node0.x, node0.y, 5, GREEN);
 				
 				
 			EndMode2D();

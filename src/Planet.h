@@ -32,4 +32,5 @@ public:
     void changeOffset(int node, int change);
     Orientation planetToWorldCords(float planetPos);
     Segment getHoveredSegment(Vector2 worldMousePosition);
+    Vector2 getNodePosition(int node) { return nodePositions[node]; };
 };
