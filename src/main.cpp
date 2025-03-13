@@ -40,14 +40,13 @@ int main()
 				DrawLineEx(seg.node1, seg.node2, 3, BLUE);
 
 				int change = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
-				planetPointer2->changeOffset(seg.startNode, change);
-				planetPointer2->changeOffset(seg.endNode, change);
+				if (change) {
+					planetPointer2->changeOffset(seg.startNode, change);
+					planetPointer2->changeOffset(seg.endNode, change);
+				}
+
 
 				Vector2 playerPos = player.getPosition();
-
-				Vector2 node0 = planetPointer2->getNodePosition(0);
-				DrawCircle(node0.x, node0.y, 5, GREEN);
-				
 				
 			EndMode2D();
 

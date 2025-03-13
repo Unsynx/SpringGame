@@ -24,20 +24,40 @@ Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
 }
 
 void Planet::updateNodePositions() {
+    nodePositions[0] = position;
     float angle = 0;
-    float changeInDeg = 360 / (float)nodeCount;
-    for (int i = 0; i < nodeCount; i++) {
-        angle = PI * (changeInDeg * i) / 180;
+    float changeInDeg = 360 / (float)(nodeCount - 2);
+    for (int i = 1; i < nodeCount; i++) {
         nodePositions[i] = (Vector2){ 
             position.x + (baseSize + nodeOffsets[i]) * cos(angle), 
             position.y - (baseSize + nodeOffsets[i]) * sin(angle) 
         };
+        TraceLog(LOG_INFO, TextFormat("%i @ angle: %f", i, angle));
+        angle = PI * (changeInDeg * i) / 180;
     }
+
+    nodePositions[nodeCount - 1] = nodePositions[1];
 }
 
 void Planet::draw() {
     // Draw the triangle fan with the given color
     DrawTriangleFan(nodePositions.data(), nodeCount, RED);
+
+    Vector2 node = getNodePosition(0);
+    DrawCircle(node.x, node.y, 5, GREEN);
+    DrawText("0", node.x, node.y, 16, BLACK);
+
+    node = getNodePosition(1);
+    DrawCircle(node.x, node.y, 5, BLUE);
+    DrawText("1", node.x, node.y, 16, BLACK);
+
+    node = getNodePosition(2);
+    DrawCircle(node.x, node.y, 5, YELLOW);
+    DrawText("2", node.x, node.y, 16, BLACK);
+
+    node = getNodePosition(nodeCount);
+    DrawCircle(node.x, node.y, 5, BLUE);
+    DrawText("nodeCount", node.x, node.y, 16, BLACK);
 }
 
 void Planet::changeOffset(int node, int change) {
