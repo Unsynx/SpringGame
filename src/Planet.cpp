@@ -29,8 +29,8 @@ void Planet::updateNodePositions() {
     float changeInDeg = 360 / (float)(nodeCount - 2);
     for (int i = 1; i < nodeCount; i++) {
         nodePositions[i] = (Vector2){ 
-            position.x + (baseSize + nodeOffsets[i]) * cos(angle), 
-            position.y - (baseSize + nodeOffsets[i]) * sin(angle) 
+            position.x + (baseSize + nodeOffsets[i - 1]) * cos(angle), 
+            position.y - (baseSize + nodeOffsets[i - 1]) * sin(angle) 
         };
         TraceLog(LOG_INFO, TextFormat("%i @ angle: %f", i, angle));
         angle = PI * (changeInDeg * i) / 180;
@@ -43,6 +43,7 @@ void Planet::draw() {
     // Draw the triangle fan with the given color
     DrawTriangleFan(nodePositions.data(), nodeCount, RED);
 
+    /*
     Vector2 node = getNodePosition(0);
     DrawCircle(node.x, node.y, 5, GREEN);
     DrawText("0", node.x, node.y, 16, BLACK);
@@ -58,6 +59,7 @@ void Planet::draw() {
     node = getNodePosition(nodeCount);
     DrawCircle(node.x, node.y, 5, BLUE);
     DrawText("nodeCount", node.x, node.y, 16, BLACK);
+    */
 }
 
 void Planet::changeOffset(int node, int change) {
@@ -93,15 +95,18 @@ Orientation Planet::planetToWorldCords(float planetPos) {
 }
 
 Segment Planet::getHoveredSegment(Vector2 worldMousePosition) {
-    float anglePerNode = 360.0f / nodeCount;
+    float anglePerNode = 360.0f / (nodeCount - 2);
 
     // Use atan2 to calculate angle correctly in all quadrants
     float angleFromCenter = atan2(position.y - worldMousePosition.y, worldMousePosition.x - position.x);
     angleFromCenter = fmod((angleFromCenter * 180 / PI) + 360, 360); // Normalize angle to [0, 360]
 
     Segment segment;
-    segment.startNode = floor(angleFromCenter / anglePerNode);
+    segment.startNode = floor(angleFromCenter / anglePerNode) + 1;
     segment.endNode = (segment.startNode + 1) % nodeCount;
+    if (segment.endNode == nodeCount - 1) {
+        segment.endNode = 1;
+    }
     segment.node1 = nodePositions[segment.startNode];
     segment.node2 = nodePositions[segment.endNode];
     

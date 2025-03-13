@@ -38,6 +38,10 @@ int main()
 				Vector2 worldMousePos = GetScreenToWorld2D(GetMousePosition(), camera);
 				Segment seg = planetPointer2->getHoveredSegment(worldMousePos);
 				DrawLineEx(seg.node1, seg.node2, 3, BLUE);
+				DrawCircle(seg.node1.x, seg.node1.y, 3, BLUE);
+				DrawText(TextFormat("%i", seg.startNode), seg.node1.x, seg.node1.y, 16, GREEN);
+				DrawCircle(seg.node2.x, seg.node2.y, 3, BLUE);
+				DrawText(TextFormat("%i", seg.endNode), seg.node2.x, seg.node2.y, 16, BLACK);
 
 				int change = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
 				if (change) {
