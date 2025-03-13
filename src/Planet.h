@@ -5,6 +5,12 @@
 #include <raymath.h>
 #include <vector>
 
+struct PlanetPoint {
+    Vector2 position;
+    Vector2 surfaceNormal;
+    Vector2 centerDirection;
+};
+
 class Planet {
 private:
     static const int NODE_PER_SURFACE_LENGTH = 15;
@@ -18,5 +24,5 @@ public:
     void updateNodePositions();
     void draw();
     void changeOffset(int node, int change);
-    Vector2 planetToWorldCords(float planetPos);
+    PlanetPoint planetToWorldCords(float planetPos);
 };

@@ -28,7 +28,7 @@ int main()
         else if (IsKeyDown(KEY_DOWN)) player.y += 2;
 
 		camera.target = player;
-		planetPos += 0.005;
+		planetPos += 0.001;
 
 
 		// Rendering
@@ -39,8 +39,12 @@ int main()
 
 				planetPointer->draw();
 				planetPointer2->draw();
-				Vector2 pos = planetPointer2->planetToWorldCords(planetPos);
-				DrawCircle(pos.x, pos.y, 10, BLACK);
+				PlanetPoint point = planetPointer2->planetToWorldCords(planetPos);
+				Vector2 pos = point.position;
+				// DrawCircle(pos.x, pos.y, 10, BLACK);
+
+				DrawLineEx(pos, Vector2Add(pos, point.centerDirection * 50), 3, GREEN);
+				DrawLineEx(pos, Vector2Add(pos, point.surfaceNormal * 50), 3, BLUE);
 				
 			EndMode2D();
 
