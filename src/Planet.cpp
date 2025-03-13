@@ -119,3 +119,7 @@ Segment Planet::getHoveredSegment(Vector2 worldMousePosition) {
     
     return segment;
 }
+
+bool Planet::isColliding(Vector2 point) {
+    return CheckCollisionPointPoly(point, nodePositions.data(), nodeCount);
+}

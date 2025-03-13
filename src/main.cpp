@@ -59,6 +59,9 @@ int main()
 			DrawText(TextFormat("Player: %f %f", playerPos.x, playerPos.y), 12, 36, 16, BLACK);
 			DrawText(TextFormat("Mouse: %f %f", worldMousePos.x, worldMousePos.y), 12, 50, 16, BLACK);
 
+			bool mouseColliding = planetPointer2->isColliding(worldMousePos);
+			DrawText(TextFormat("Mouse Collision: %i", mouseColliding), 12, 64, 16, BLACK);
+
 		EndDrawing();
 	}
 
