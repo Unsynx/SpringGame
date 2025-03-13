@@ -35,6 +35,10 @@ int main()
 				planetPointer2->draw();
 				player.draw();
 
+				Vector2 worldMousePos = GetScreenToWorld2D(GetMousePosition(), camera);
+				Segment seg = planetPointer2->getHoveredSegment(worldMousePos);
+				DrawLineEx(seg.node1, seg.node2, 3, BLUE);
+
 				Vector2 playerPos = player.getPosition();
 				
 				
@@ -43,6 +47,7 @@ int main()
 			// UI
 			DrawFPS(12, 12);
 			DrawText(TextFormat("Player: %f %f", playerPos.x, playerPos.y), 12, 36, 16, BLACK);
+			DrawText(TextFormat("Mouse: %f %f", worldMousePos.x, worldMousePos.y), 12, 50, 16, BLACK);
 
 		EndDrawing();
 	}

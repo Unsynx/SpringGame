@@ -71,3 +71,19 @@ Orientation Planet::planetToWorldCords(float planetPos) {
     result.surfaceNormal = Vector2Rotate(direction, PI / 2);
     return result;
 }
+
+Segment Planet::getHoveredSegment(Vector2 worldMousePosition) {
+    float anglePerNode = 360.0f / nodeCount;
+
+    // Use atan2 to calculate angle correctly in all quadrants
+    float angleFromCenter = atan2(position.y - worldMousePosition.y, worldMousePosition.x - position.x);
+    angleFromCenter = fmod((angleFromCenter * 180 / PI) + 360, 360); // Normalize angle to [0, 360]
+
+    Segment segment;
+    segment.startNode = floor(angleFromCenter / anglePerNode);
+    segment.endNode = (segment.startNode + 1) % nodeCount;
+    segment.node1 = nodePositions[segment.startNode];
+    segment.node2 = nodePositions[segment.endNode];
+    
+    return segment;
+}

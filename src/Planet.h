@@ -10,6 +10,13 @@ struct Orientation {
     Vector2 centerDirection;
 };
 
+struct Segment {
+    int startNode;
+    int endNode;
+    Vector2 node1;
+    Vector2 node2;
+};
+
 class Planet {
 private:
     static const int NODE_PER_SURFACE_LENGTH = 15;
@@ -24,4 +31,5 @@ public:
     void draw();
     void changeOffset(int node, int change);
     Orientation planetToWorldCords(float planetPos);
+    Segment getHoveredSegment(Vector2 worldMousePosition);
 };
