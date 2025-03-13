@@ -68,17 +68,23 @@ void Planet::changeOffset(int node, int change) {
 }
 
 Orientation Planet::planetToWorldCords(float planetPos) {
-    planetPos = planetPos - floor(planetPos);
+    // Wrap planetPos to range [0,1)
+    planetPos = fmod(planetPos, 1.0f);
+    if (planetPos < 0) planetPos += 1.0f;
 
-    int startNode = (int)floor(nodeCount * planetPos);
-    int endNode = (startNode + 1) % nodeCount;
+    // Compute valid node range [1, nodeCount - 2]
+    int startNode = 1 + (int)floor((nodeCount - 2) * planetPos);
+    int endNode = startNode + 1;
+
+    // Wrap endNode if it exceeds valid range
+    if (endNode >= nodeCount - 1) endNode = 1;
 
     // Compute world-space segment length
     float segmentLength = Vector2Distance(nodePositions[startNode], nodePositions[endNode]);
 
     // Compute how far `planetPos` is along this segment in world coordinates
-    float segmentNormalizedLength = 1.0f / nodeCount;
-    float distanceAlongSegment = (planetPos - (startNode * segmentNormalizedLength)) / segmentNormalizedLength * segmentLength;
+    float segmentNormalizedLength = 1.0f / (nodeCount - 2);
+    float distanceAlongSegment = (planetPos - ((startNode - 1) * segmentNormalizedLength)) / segmentNormalizedLength * segmentLength;
 
     // Compute direction vector between nodes
     Vector2 direction = Vector2Normalize(Vector2Subtract(nodePositions[endNode], nodePositions[startNode]));
@@ -91,6 +97,7 @@ Orientation Planet::planetToWorldCords(float planetPos) {
     result.position = Vector2Add(nodePositions[startNode], offset);
     result.centerDirection = Vector2Normalize(Vector2Subtract(result.position, position));
     result.surfaceNormal = Vector2Rotate(direction, PI / 2);
+    
     return result;
 }
 
