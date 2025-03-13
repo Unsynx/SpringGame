@@ -39,6 +39,10 @@ int main()
 				Segment seg = planetPointer2->getHoveredSegment(worldMousePos);
 				DrawLineEx(seg.node1, seg.node2, 3, BLUE);
 
+				int change = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
+				planetPointer2->changeOffset(seg.startNode, change);
+				planetPointer2->changeOffset(seg.endNode, change);
+
 				Vector2 playerPos = player.getPosition();
 				
 				
