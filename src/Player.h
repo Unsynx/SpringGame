@@ -8,13 +8,15 @@
 
 class Player {
 private:
-    float playerSpeed = 0.001f;
-    float planetPosition = 0.0f;
+    float playerSpeed = 0.1f;
     Planet* planet;
     Camera2D& camera;
+    Vector2 position;
+    Vector2 velocity = Vector2Zero();
+    bool hasJumped = false;
 public:
-    Player(Planet* target, Camera2D& camera): planet(target), camera(camera) {};
+    Player(Planet* target, Camera2D& camera, Vector2 spawnPos): planet(target), camera(camera), position(spawnPos) {};
     void draw();
     void update();
-    Vector2 getPosition() { return planet->planetToWorldCords(planetPosition).position; }
+    Vector2 getPosition() { return position; }
 };
