@@ -18,7 +18,7 @@ int main()
 	camera.target = player;
 	camera.zoom = 1.0f;
 
-
+	float planetPos = 0;
 	
 	while (!WindowShouldClose()) {
 		// Update
@@ -28,18 +28,25 @@ int main()
         else if (IsKeyDown(KEY_DOWN)) player.y += 2;
 
 		camera.target = player;
+		planetPos += 0.005;
 
 
 		// Rendering
 		BeginDrawing();
 			ClearBackground(RAYWHITE);
-			DrawFPS(12, 12);
+			
 			BeginMode2D(camera);
 
-			planetPointer->draw();
-			planetPointer2->draw();
-
+				planetPointer->draw();
+				planetPointer2->draw();
+				Vector2 pos = planetPointer2->planetToWorldCords(planetPos);
+				DrawCircle(pos.x, pos.y, 10, BLACK);
+				
 			EndMode2D();
+
+			DrawFPS(12, 12);
+			DrawText(TextFormat("Planet Ps: %f", planetPos), 16, 36, 12, BLACK);
+			DrawText(TextFormat("Position: x-%f y-%f", pos.x, pos.y), 16, 70, 12, BLACK);
 
 		EndDrawing();
 	}
