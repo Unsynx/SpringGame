@@ -160,7 +160,7 @@ void PlanetSystem::computeField() {
             float closestPlanetDistance = INFINITY;
             for (int i = 0; i < planets.size(); i++) {
                 // Find closest planet
-                float distance = Vector2Distance(samplePosition, planets[i].getPosition());
+                float distance = Vector2Distance(samplePosition, planets[i].getPosition()) - planets[i].getSize();
                 if (distance < closestPlanetDistance) { 
                     closestPlanetDistance = distance;
                     sample.closestPlanet = i; 
