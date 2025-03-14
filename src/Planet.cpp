@@ -142,9 +142,8 @@ Vector2 Planet::getSurfaceNormal(Vector2 point) {
 
 
 PlanetSystem::PlanetSystem() {
-    planets.resize(2);
-    planets[0] = Planet(50, (Vector2){240, 180});
-    planets[1] = Planet(200, (Vector2){0, 0});
+    planets.resize(1);
+    planets[0] = Planet(50, (Vector2){100, 100});
 
     gravityField.resize(width, std::vector<GravitySample>(height));
 }
@@ -160,14 +159,15 @@ void PlanetSystem::computeField() {
             float closestPlanetDistance = INFINITY;
             for (int i = 0; i < planets.size(); i++) {
                 // Find closest planet
-                float distance = Vector2Distance(samplePosition, planets[i].getPosition()) - planets[i].getSize();
-                if (distance < closestPlanetDistance) { 
-                    closestPlanetDistance = distance;
+                float distance = Vector2Distance(samplePosition, planets[i].getPosition());
+                float distanceFromSurface = distance - planets[i].getSize();
+                if (distanceFromSurface < closestPlanetDistance) { 
+                    closestPlanetDistance = distanceFromSurface;
                     sample.closestPlanet = i; 
             }
 
                 // Find planet gravity
-                float gravityMag = -(float)(PI * pow(planets[i].getSize(), 2)) / (distance * distance);
+                float gravityMag = GRAVITY_CONSTANT * -(float)(PI * pow(planets[i].getSize(), 2)) / distance;
                 Vector2 gravityAtSample = Vector2Scale(Vector2Subtract(samplePosition, planets[i].getPosition()), gravityMag);
                 sample.gravity = Vector2Add(sample.gravity, gravityAtSample);
             }
@@ -181,8 +181,8 @@ void PlanetSystem::computeField() {
 
 Vector2 PlanetSystem::gravityAt(Vector2 position) {
     // Get grid cell coordinates
-    int xStart = Clamp(floor(position.x / SAMPLE_DISTANCE), 0, width - 2);
-    int yStart = Clamp(floor(position.y / SAMPLE_DISTANCE), 0, height - 2);
+    int xStart = Clamp(floor(position.x / SAMPLE_DISTANCE), 1, width - 2);
+    int yStart = Clamp(floor(position.y / SAMPLE_DISTANCE), 1, height - 2);
 
     // Get interpolation factors
     float tx = (position.x / SAMPLE_DISTANCE) - xStart;
@@ -233,12 +233,12 @@ void PlanetSystem::drawField(Camera2D camera) {
             Vector2 position = (Vector2){ (float)(x * SAMPLE_DISTANCE), (float)(y * SAMPLE_DISTANCE) };
             GravitySample sample = gravityField[y][x];
 
-            DrawArrow(position, Vector2Add(position, sample.gravity / 20), 6, 2, GREEN);
+            DrawArrow(position, Vector2Add(position, sample.gravity * 10), 6, 2, GREEN);
         }
     }
 
     Vector2 position = GetScreenToWorld2D(GetMousePosition(), camera);
-    DrawArrow(position, Vector2Add(position, gravityAt(position) / 20), 6, 2, GREEN);
+    DrawArrow(position, Vector2Add(position, gravityAt(position) * 10), 6, 2, GREEN);
 }
 
 void PlanetSystem::draw() {

@@ -9,15 +9,11 @@ float radToDeg(float rad) {
 }
 
 void Player::updateGravity() {
-    // Todo: get gravity direction from precomputed gravity field.
     Vector2 planetPos = planet->getPosition();
-    float gravity = -0.05;
-    
-    // Direction Vectors
-    Vector2 upDirection = Vector2Normalize(Vector2Subtract(position, planetPos));
     
     // Apply Gravity
-    velocity = Vector2Add(velocity, Vector2Scale(upDirection, gravity));
+    velocity = Vector2Add(velocity, ps.gravityAt(position));
+    TraceLog(LOG_INFO, TextFormat("Velocity: [%f, %f]", velocity.x, velocity.y));
     
     // First, handle vertical movement (gravity and jumps)
     Vector2 newPosition = Vector2Add(position, velocity);

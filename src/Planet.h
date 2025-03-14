@@ -48,9 +48,10 @@ struct GravitySample {
 
 class PlanetSystem {
 private:
-    static const int SAMPLE_DISTANCE = 50;
-    int width = 10;
-    int height = 10;
+    static const int SAMPLE_DISTANCE = 10;
+    static constexpr float GRAVITY_CONSTANT = 0.00001f;
+    int width = 100;
+    int height = 100;
     std::vector<Planet> planets;
     std::vector<std::vector<GravitySample>> gravityField;
 public:
