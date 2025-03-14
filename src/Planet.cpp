@@ -7,6 +7,8 @@
 
 #include "Planet.h"
 
+// ----------- Planet -----------
+
 Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
     float circumCircle = 2 * PI * baseSize;
     nodeCount = circumCircle / NODE_PER_SURFACE_LENGTH;
@@ -133,4 +135,86 @@ Vector2 Planet::getSurfaceNormal(Vector2 point) {
 
     // Rotate 90 degrees to get the normal
     return Vector2Rotate(direction, PI / 2);
+}
+
+// ----------- Planet System -----------
+
+
+
+PlanetSystem::PlanetSystem() {
+    planets.resize(2);
+    planets[0] = Planet(50, (Vector2){240, 180});
+    planets[1] = Planet(200, (Vector2){0, 0});
+
+    gravityField.resize(width, std::vector<GravitySample>(height));
+}
+
+void PlanetSystem::computeField() {
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            GravitySample sample;
+            sample.gravity = Vector2Zero();
+
+            Vector2 samplePosition = (Vector2){ (float)(x * SAMPLE_DISTANCE), (float)(y * SAMPLE_DISTANCE) };
+            
+            float closestPlanetDistance = INFINITY;
+            for (int i = 0; i < planets.size(); i++) {
+                // Find closest planet
+                float distance = Vector2Distance(samplePosition, planets[i].getPosition());
+                if (distance < closestPlanetDistance) { 
+                    closestPlanetDistance = distance;
+                    sample.closestPlanet = i; 
+            }
+
+                // Find planet gravity
+                float gravityMag = -(float)(PI * pow(planets[i].getSize(), 2)) / (distance * distance);
+                Vector2 gravityAtSample = Vector2Scale(Vector2Subtract(samplePosition, planets[i].getPosition()), gravityMag);
+                sample.gravity = Vector2Add(sample.gravity, gravityAtSample);
+            }
+
+            TraceLog(LOG_INFO, TextFormat("Sample: [%f, %f]", sample.gravity.x, sample.gravity.y));
+            gravityField[x][y] = sample;
+        }
+    }
+
+}
+
+Vector2 PlanetSystem::gravityAt(Vector2 position) {
+    return Vector2Zero();
+}
+
+void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineThickness = 2.0f, Color color = BLACK) {
+    // Draw main line
+    DrawLineEx(start, end, lineThickness, color);
+
+    // Calculate direction
+    Vector2 direction = Vector2Subtract(end, start);
+    float length = Vector2Length(direction);
+    if (length == 0) return;  // Avoid division by zero
+
+    direction = Vector2Scale(direction, 1.0f / length); // Normalize
+
+    // Calculate arrowhead base position (a bit before the end)
+    Vector2 arrowBase = Vector2Add(end, Vector2Scale(direction, -arrowSize));
+
+    // Perpendicular direction for arrowhead
+    Vector2 perp = { -direction.y, direction.x };
+
+    // Calculate arrowhead points
+    Vector2 arrowLeft = Vector2Add(arrowBase, Vector2Scale(perp, arrowSize * 0.5f));
+    Vector2 arrowRight = Vector2Subtract(arrowBase, Vector2Scale(perp, arrowSize * 0.5f));
+
+    // Draw arrowhead
+    DrawTriangle(end, arrowRight, arrowLeft, color);
+}
+
+void PlanetSystem::drawField() {
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            Vector2 position = (Vector2){ (float)(x * SAMPLE_DISTANCE), (float)(y * SAMPLE_DISTANCE) };
+            GravitySample sample = gravityField[x][y];
+
+            DrawArrow(position, Vector2Add(position, sample.gravity / 20), 6, 2, GREEN);
+        }
+    }
 }

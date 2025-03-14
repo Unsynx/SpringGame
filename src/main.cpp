@@ -18,6 +18,9 @@ int main()
 	camera.zoom = 1.0f;
 	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
 
+	PlanetSystem planetSystem;
+	planetSystem.computeField();
+
 	Player player(planetPointer2, camera, Vector2AddValue(planetPointer2->planetToWorldCords(0).position, 20));
 	
 	while (!WindowShouldClose()) {
@@ -50,6 +53,8 @@ int main()
 				DrawText(TextFormat("%i", seg.startNode), seg.node1.x, seg.node1.y, 16, GREEN);
 				DrawCircle(seg.node2.x, seg.node2.y, 3, BLUE);
 				DrawText(TextFormat("%i", seg.endNode), seg.node2.x, seg.node2.y, 16, BLACK);
+
+				planetSystem.drawField();
 				
 			EndMode2D();
 

@@ -27,6 +27,7 @@ private:
     int baseSize;
     Vector2 position;
 public:
+    Planet() : baseSize(0), position({0, 0}) {}; // empty planet
     Planet(int size, Vector2 position);
     void updateNodePositions();
     void draw();
@@ -37,4 +38,24 @@ public:
     Vector2 getPosition() { return position; }
     bool isColliding(Vector2 point);
     Vector2 getSurfaceNormal(Vector2 point);
+    int getSize() { return baseSize; };
+};
+
+struct GravitySample {
+    Vector2 gravity;
+    int closestPlanet;
+};
+
+class PlanetSystem {
+private:
+    static const int SAMPLE_DISTANCE = 50;
+    int width = 10;
+    int height = 10;
+    std::vector<Planet> planets;
+    std::vector<std::vector<GravitySample>> gravityField;
+public:
+    PlanetSystem();
+    void computeField();
+    Vector2 gravityAt(Vector2 position);
+    void drawField();
 };
