@@ -173,14 +173,33 @@ void PlanetSystem::computeField() {
             }
 
             TraceLog(LOG_INFO, TextFormat("Sample: [%f, %f]", sample.gravity.x, sample.gravity.y));
-            gravityField[x][y] = sample;
+            gravityField[y][x] = sample;
         }
     }
 
 }
 
 Vector2 PlanetSystem::gravityAt(Vector2 position) {
-    return Vector2Zero();
+    // Get grid cell coordinates
+    int xStart = Clamp(floor(position.x / SAMPLE_DISTANCE), 0, width - 2);
+    int yStart = Clamp(floor(position.y / SAMPLE_DISTANCE), 0, height - 2);
+
+    // Get interpolation factors
+    float tx = (position.x / SAMPLE_DISTANCE) - xStart;
+    float ty = (position.y / SAMPLE_DISTANCE) - yStart;
+
+    // Get gravity samples at the four corners
+    Vector2 g00 = gravityField[yStart][xStart].gravity;
+    Vector2 g10 = gravityField[yStart][xStart + 1].gravity;
+    Vector2 g01 = gravityField[yStart + 1][xStart].gravity;
+    Vector2 g11 = gravityField[yStart + 1][xStart + 1].gravity;
+
+    // Bilinear interpolation
+    Vector2 gTop = Vector2Lerp(g00, g10, tx);  // Interpolate top row
+    Vector2 gBottom = Vector2Lerp(g01, g11, tx);  // Interpolate bottom row
+    Vector2 gravity = Vector2Lerp(gTop, gBottom, ty);  // Final interpolation
+
+    return gravity;
 }
 
 void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineThickness = 2.0f, Color color = BLACK) {
@@ -208,13 +227,16 @@ void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineTh
     DrawTriangle(end, arrowRight, arrowLeft, color);
 }
 
-void PlanetSystem::drawField() {
+void PlanetSystem::drawField(Camera2D camera) {
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             Vector2 position = (Vector2){ (float)(x * SAMPLE_DISTANCE), (float)(y * SAMPLE_DISTANCE) };
-            GravitySample sample = gravityField[x][y];
+            GravitySample sample = gravityField[y][x];
 
             DrawArrow(position, Vector2Add(position, sample.gravity / 20), 6, 2, GREEN);
         }
     }
+
+    Vector2 position = GetScreenToWorld2D(GetMousePosition(), camera);
+    DrawArrow(position, Vector2Add(position, gravityAt(position) / 20), 6, 2, GREEN);
 }

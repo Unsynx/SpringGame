@@ -54,7 +54,7 @@ int main()
 				DrawCircle(seg.node2.x, seg.node2.y, 3, BLUE);
 				DrawText(TextFormat("%i", seg.endNode), seg.node2.x, seg.node2.y, 16, BLACK);
 
-				planetSystem.drawField();
+				planetSystem.drawField(camera);
 				
 			EndMode2D();
 

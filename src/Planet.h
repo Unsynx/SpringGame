@@ -57,5 +57,5 @@ public:
     PlanetSystem();
     void computeField();
     Vector2 gravityAt(Vector2 position);
-    void drawField();
+    void drawField(Camera2D camera);
 };
