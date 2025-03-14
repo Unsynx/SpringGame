@@ -18,5 +18,7 @@ public:
     Player(Planet* target, Camera2D& camera, Vector2 spawnPos): planet(target), camera(camera), position(spawnPos) {};
     void draw();
     void update();
-    Vector2 getPosition() { return position; }
+    Vector2 getPosition() { return position; };
+private:
+    Vector2 resolveCollision(Vector2 start, Vector2 end);
 };

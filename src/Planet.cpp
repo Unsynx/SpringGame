@@ -123,3 +123,14 @@ Segment Planet::getHoveredSegment(Vector2 worldMousePosition) {
 bool Planet::isColliding(Vector2 point) {
     return CheckCollisionPointPoly(point, nodePositions.data(), nodeCount);
 }
+
+Vector2 Planet::getSurfaceNormal(Vector2 point) {
+    // Find the closest segment
+    Segment segment = getHoveredSegment(point);
+
+    // Compute direction vector along the surface segment
+    Vector2 direction = Vector2Normalize(Vector2Subtract(segment.node2, segment.node1));
+
+    // Rotate 90 degrees to get the normal
+    return Vector2Rotate(direction, PI / 2);
+}

@@ -18,7 +18,7 @@ int main()
 	camera.zoom = 1.0f;
 	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
 
-	Player player(planetPointer2, camera, planetPointer2->planetToWorldCords(0).position);
+	Player player(planetPointer2, camera, Vector2AddValue(planetPointer2->planetToWorldCords(0).position, 20));
 	
 	while (!WindowShouldClose()) {
 		// Update
