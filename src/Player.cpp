@@ -19,17 +19,11 @@ void Player::updateGravity() {
     // Apply Gravity
     velocity = Vector2Add(velocity, Vector2Scale(upDirection, gravity));
     
-    // Jump
-    if (IsKeyPressed(KEY_SPACE) && !hasJumped) {
-        hasJumped = true;
-        velocity = Vector2Add(velocity, Vector2Scale(upDirection, 1));
-    }
-    
     // First, handle vertical movement (gravity and jumps)
     Vector2 newPosition = Vector2Add(position, velocity);
     
     // Check for collision from vertical movement
-    bool isOnGround = false;
+    isOnGround = false;
     if (planet->isColliding(newPosition)) {
         hasJumped = false;
         isOnGround = true;
@@ -56,14 +50,49 @@ void Player::updateMovement() {
     Vector2 upDirection = Vector2Normalize(Vector2Subtract(position, planetPos));
     Vector2 rightDirection = Vector2Rotate(upDirection, PI / 2);
 
+    // Jump, this be handled w/ the gravity calculations.
+    if (IsKeyPressed(KEY_SPACE) && !hasJumped) {
+        hasJumped = true;
+        velocity = Vector2Add(velocity, Vector2Scale(upDirection, 3));
+    }
+
     // Movement Input
     int inputX = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT);
-    Vector2 rawMovement = Vector2Scale(rightDirection, inputX);
-    
-    // Now handle horizontal movement with slope handling
-    if (inputX != 0) {
-
+    if (inputX == 0) {
+        return;
     }
+
+    // In air movement
+    if (!isOnGround) {
+        Vector2 rawMovement = Vector2Scale(rightDirection, inputX);
+        Vector2 newPosition = Vector2Add(position, rawMovement);
+        if (planet->isColliding(newPosition)) {
+            newPosition = resolveCollision(position, newPosition);
+        }
+        position = newPosition;
+        return;
+    }
+
+    // On ground movement
+    Vector2 surfaceNormal = planet->getSurfaceNormal(position);
+    Vector2 surfaceTangent = Vector2Rotate(surfaceNormal, PI / 2);
+
+    Vector2 rawMovement = Vector2Scale(surfaceTangent, inputX);
+    Vector2 newPosition = Vector2Add(position, rawMovement);
+
+    if (planet->isColliding(newPosition)) {
+        // This 10 value is arbitrary
+        Vector2 noCollisionSpot = Vector2Add(newPosition, Vector2Scale(surfaceNormal, 10));
+        newPosition = resolveCollision(noCollisionSpot, newPosition);
+    } else {
+        // This -10 value is arbitrary
+        Vector2 collisionSpot = Vector2Add(newPosition, Vector2Scale(surfaceNormal, -10));
+        if (planet->isColliding(collisionSpot)) {
+            newPosition = resolveCollision(newPosition, collisionSpot);
+        }
+    }
+
+    position = newPosition;
 }
 
 void Player::updateCamera() {

@@ -15,7 +15,7 @@ private:
     Vector2 position;
     Vector2 velocity = Vector2Zero();
     bool hasJumped = false;
-    bool isGrounded = false;
+    bool isOnGround = false;
 public:
     Player(Planet* target, Camera2D& camera, Vector2 spawnPos): planet(target), camera(camera), position(spawnPos) {};
     void draw();
