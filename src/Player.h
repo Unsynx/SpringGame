@@ -10,6 +10,7 @@ class Player {
 private:
     float playerSpeed = 0.1f;
     float jumpStrength = 2.0f;
+    PlanetSystem& ps;
     Planet* planet;
     Camera2D& camera;
     Vector2 position;
@@ -17,7 +18,7 @@ private:
     bool hasJumped = false;
     bool isOnGround = false;
 public:
-    Player(Planet* target, Camera2D& camera, Vector2 spawnPos): planet(target), camera(camera), position(spawnPos) {};
+    Player(PlanetSystem& ps, Camera2D& camera, Vector2 spawnPos): ps(ps), camera(camera), position(spawnPos) {};
     void draw();
     void update();
     Vector2 getPosition() { return position; };

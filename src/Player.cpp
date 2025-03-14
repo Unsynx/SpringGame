@@ -104,6 +104,7 @@ void Player::updateCamera() {
 }
 
 void Player::update() {
+    planet = ps.getNearestPlanet(position);
     updateGravity();
     updateMovement();
     updateCamera();

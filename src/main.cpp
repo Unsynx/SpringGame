@@ -11,9 +11,6 @@ int main()
 	InitWindow(480, 360, "Nik's Game");
 	SetTargetFPS(60);
 
-	Planet* planetPointer = new Planet(50, (Vector2){240, 180});
-	Planet* planetPointer2 = new Planet(200, (Vector2){0, 0});
-
 	Camera2D camera = { 0 };
 	camera.zoom = 1.0f;
 	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
@@ -21,7 +18,7 @@ int main()
 	PlanetSystem planetSystem;
 	planetSystem.computeField();
 
-	Player player(planetPointer2, camera, Vector2AddValue(planetPointer2->planetToWorldCords(0).position, 20));
+	Player player(planetSystem, camera, Vector2Zero());
 	
 	while (!WindowShouldClose()) {
 		// Update
@@ -34,11 +31,7 @@ int main()
 			// Camera
 			BeginMode2D(camera);
 				planetSystem.draw();
-				planetPointer->draw();
-				planetPointer2->draw();
 				player.draw();
-
-
 				planetSystem.drawField(camera);
 				
 			EndMode2D();
@@ -51,7 +44,6 @@ int main()
 		EndDrawing();
 	}
 
-	delete planetPointer;
 	CloseWindow();
 	return 0;
 }
