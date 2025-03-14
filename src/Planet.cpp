@@ -240,3 +240,17 @@ void PlanetSystem::drawField(Camera2D camera) {
     Vector2 position = GetScreenToWorld2D(GetMousePosition(), camera);
     DrawArrow(position, Vector2Add(position, gravityAt(position) / 20), 6, 2, GREEN);
 }
+
+void PlanetSystem::draw() {
+    for (Planet planet : planets) {
+        planet.draw();
+    }
+}
+
+Planet PlanetSystem::getNearestPlanet(Vector2 position) {
+    // Get grid cell coordinates
+    int x = Clamp(round(position.x / SAMPLE_DISTANCE), 0, width - 1);
+    int y = Clamp(round(position.y / SAMPLE_DISTANCE), 0, height - 1);
+
+    return planets[gravityField[y][x].closestPlanet];
+}
