@@ -9,7 +9,7 @@
 class Player {
 private:
     float playerSpeed = 0.1f;
-    float jumpStrength = 2.0f;
+    float jumpStrength = 0.3f;
     PlanetSystem& ps;
     Planet* planet;
     Camera2D& camera;

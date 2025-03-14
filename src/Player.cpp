@@ -13,7 +13,6 @@ void Player::updateGravity() {
     
     // Apply Gravity
     velocity = Vector2Add(velocity, ps.gravityAt(position));
-    TraceLog(LOG_INFO, TextFormat("Velocity: [%f, %f]", velocity.x, velocity.y));
     
     // First, handle vertical movement (gravity and jumps)
     Vector2 newPosition = Vector2Add(position, velocity);

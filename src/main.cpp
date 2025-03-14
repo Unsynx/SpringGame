@@ -18,7 +18,7 @@ int main()
 	PlanetSystem planetSystem;
 	planetSystem.computeField();
 
-	Player player(planetSystem, camera, Vector2Zero());
+	Player player(planetSystem, camera, (Vector2){ 150.0f, 150.0f });
 	
 	while (!WindowShouldClose()) {
 		// Update
@@ -30,9 +30,9 @@ int main()
 			
 			// Camera
 			BeginMode2D(camera);
+				planetSystem.drawField(camera);
 				planetSystem.draw();
 				player.draw();
-				planetSystem.drawField(camera);
 				
 			EndMode2D();
 
