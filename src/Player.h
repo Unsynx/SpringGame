@@ -39,9 +39,8 @@ public:
 class Player : public GravityAffected {
 private:
     // Movement values
-    float playerSpeed = 0.1f;
-    float jumpStrength = 0.2f;
-    bool hasJumped = false;
+    static constexpr float PLAYER_AIR_ACCEL = 0.01f;
+    static constexpr float JUMP_STRENGTH = 2.0f;
 
     // Object refrences
     Camera2D& camera;

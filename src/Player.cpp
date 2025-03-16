@@ -69,26 +69,21 @@ void Player::updateMovement() {
     Vector2 upDirection = Vector2Normalize(Vector2Subtract(getPosition(), getPlanetPosition()));
     Vector2 rightDirection = Vector2Rotate(upDirection, PI / 2);
 
-    // Jump, this be handled w/ the gravity calculations.
-    if (IsKeyPressed(KEY_SPACE) && !hasJumped) {
-        hasJumped = true;
-        addVelocity(Vector2Scale(upDirection, 3));
-    }
-
     // Movement Input
     int inputX = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT);
+
+    if (IsKeyPressed(KEY_SPACE)) {
+        addVelocity(Vector2Scale(upDirection, JUMP_STRENGTH));
+        addVelocity(Vector2Scale(rightDirection, inputX * JUMP_STRENGTH));
+    }
+
     if (inputX == 0) {
         return;
     }
 
     // In air movement
     if (!isOnGround()) {
-        Vector2 rawMovement = Vector2Scale(rightDirection, inputX);
-        Vector2 newPosition = Vector2Add(getPosition(), rawMovement);
-        if (isColliding(newPosition)) {
-            newPosition = resolveCollision(getPosition(), newPosition);
-        }
-        setPosition(newPosition);
+        addVelocity(Vector2Scale(rightDirection, inputX) * PLAYER_AIR_ACCEL);
         return;
     }
 
