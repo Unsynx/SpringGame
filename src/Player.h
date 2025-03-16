@@ -6,25 +6,51 @@
 
 #include "Planet.h"
 
-class Player {
+class GravityAffected {
 private:
-    float playerSpeed = 0.1f;
-    float jumpStrength = 0.2f;
-    PlanetSystem& ps;
     Planet* planet;
-    Camera2D& camera;
+    PlanetSystem& ps;
     Vector2 position;
     Vector2 velocity = Vector2Zero();
-    bool hasJumped = false;
-    bool isOnGround = false;
+    bool onGround = false;
 public:
-    Player(PlanetSystem& ps, Camera2D& camera, Vector2 spawnPos): ps(ps), camera(camera), position(spawnPos) {};
+    GravityAffected(PlanetSystem& ps, Vector2 spawnPos): 
+        ps(ps), position(spawnPos) {};
+
+    // Get Set
+    Vector2 getPosition() { return position; };
+    void setPosition(Vector2 newPos) { position = newPos; }
+    void addPosition(Vector2 change) { position = Vector2Add(position, change); };
+    Vector2 getVelocity() { return velocity; };
+    void setVelocity(Vector2 newVel) { velocity = newVel; }
+    void addVelocity(Vector2 change) { velocity = Vector2Add(velocity, change); };
+    Vector2 getPlanetPosition() { return planet->getPosition(); }
+    bool isOnGround() { return onGround; };
+    Vector2 getSurfaceNormal() { return planet->getSurfaceNormal(position); };
+    Vector2 getSurfaceNormal(Vector2 pos) { return planet->getSurfaceNormal(pos); };
+
+    void updateGravity();
+    Vector2 resolveCollision(Vector2 start, Vector2 end);
+    bool isColliding() { return planet->isColliding(position); };
+    bool isColliding(Vector2 pos) { return planet->isColliding(pos); };
+};
+
+
+class Player : public GravityAffected {
+private:
+    // Movement values
+    float playerSpeed = 0.1f;
+    float jumpStrength = 0.2f;
+    bool hasJumped = false;
+
+    // Object refrences
+    Camera2D& camera;
+public:
+    Player(PlanetSystem& ps, Camera2D& camera, Vector2 spawnPos): 
+        camera(camera), GravityAffected(ps, spawnPos) {};
     void draw();
     void update();
-    Vector2 getPosition() { return position; };
     void updateCamera();
-    void updateGravity();
     void updateMovement();
-private:
-    Vector2 resolveCollision(Vector2 start, Vector2 end);
+
 };

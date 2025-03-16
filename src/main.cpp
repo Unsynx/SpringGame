@@ -12,7 +12,7 @@ int main()
 	SetTargetFPS(60);
 
 	Camera2D camera = { 0 };
-	camera.zoom = 0.2f;
+	camera.zoom = 1.0f;
 	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
 
 	PlanetSystem planetSystem;
