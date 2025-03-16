@@ -125,13 +125,45 @@ void Player::updateCamera() {
     camera.rotation += delta * rotationSpeed * GetFrameTime();
 }
 
+void Player::terraform() {
+    if (!getPlanet()) return;
+
+    Vector2 worldMousePos = GetScreenToWorld2D(GetMousePosition(), camera);
+    Segment seg = getPlanet()->getHoveredSegment(worldMousePos);
+
+    int change = IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN);
+    if (change) {
+        getPlanet()->changeOffset(seg.startNode, change);
+        getPlanet()->changeOffset(seg.endNode, change);
+    }
+
+    // Only move player when surface is moving up
+    if (change <= 0) { return; }
+
+    Segment playerSeg = getPlanet()->getHoveredSegment(getPosition());
+    // And when player is on a hchanging segment
+    int dist = playerSeg.startNode - seg.startNode;
+    TraceLog(LOG_INFO, TextFormat("Dist: %i", dist));
+    if (-2 < dist && dist < 3) {
+        // Move player when surface is moved up.
+        addPosition(Vector2Scale(getSurfaceNormal(), change));
+    }
+}
+
 void Player::update() {
+    terraform();
     updateGravity();
     updateMovement();
     updateCamera();
 }
 
 void Player::draw() {
+    // Player
     Vector2 position = getPosition();
     DrawCircle(position.x, position.y, 5, BLACK);
+
+    // Selection
+    Vector2 worldMousePos = GetScreenToWorld2D(GetMousePosition(), camera);
+    Segment seg = getPlanet()->getHoveredSegment(worldMousePos);
+    DrawLineEx(seg.node1, seg.node2, 3, BLUE);
 }

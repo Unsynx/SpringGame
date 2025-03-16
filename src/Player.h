@@ -28,6 +28,7 @@ public:
     bool isOnGround() { return onGround; };
     Vector2 getSurfaceNormal() { return planet->getSurfaceNormal(position); };
     Vector2 getSurfaceNormal(Vector2 pos) { return planet->getSurfaceNormal(pos); };
+    Planet* getPlanet() { return planet; };
 
     void updateGravity();
     Vector2 resolveCollision(Vector2 start, Vector2 end);
@@ -51,5 +52,5 @@ public:
     void update();
     void updateCamera();
     void updateMovement();
-
+    void terraform();
 };
