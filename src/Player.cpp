@@ -111,9 +111,18 @@ void Player::updateMovement() {
 
 void Player::updateCamera() {
     Vector2 upDirection = Vector2Normalize(Vector2Subtract(getPosition(), getPlanetPosition()));
+    float currentRotation = camera.rotation;
+    float targetRotation = -atan2(upDirection.y, upDirection.x) * 180 / PI - 90;
     
     camera.target = getPosition();
-    camera.rotation = -atan2(upDirection.y, upDirection.x) * 180 / PI - 90;
+    
+    // Ensure rotation takes the shortest path
+    float delta = targetRotation - currentRotation;
+    delta = fmod(delta + 180, 360) - 180;  // Normalize to [-180, 180] range
+
+    // Smoothly interpolate (lerp) towards target rotation
+    float rotationSpeed = 5.0f;  // Adjust for desired smoothness
+    camera.rotation += delta * rotationSpeed * GetFrameTime();
 }
 
 void Player::update() {
