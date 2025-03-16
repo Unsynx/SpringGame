@@ -139,6 +139,7 @@ void Player::terraform() {
 
     // Only move player when surface is moving up
     if (change <= 0) { return; }
+    if (!isOnGround()) { return; }
 
     Segment playerSeg = getPlanet()->getHoveredSegment(getPosition());
     // And when player is on a hchanging segment
