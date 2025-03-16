@@ -139,12 +139,12 @@ Vector2 Planet::getSurfaceNormal(Vector2 point) {
 
 // ----------- Planet System -----------
 
-
-
 PlanetSystem::PlanetSystem() {
+    systemCenter = Vector2Scale((Vector2){ (float)(width * SAMPLE_DISTANCE), (float)(height * SAMPLE_DISTANCE) }, 0.5);
+
     planets.resize(2);
-    planets[0] = Planet(50, (Vector2){200, 200});
-    planets[1] = Planet(150, (Vector2){600, 600});
+    planets[0] = Planet(50, Vector2AddValue(systemCenter, 200));
+    planets[1] = Planet(150, systemCenter);
 
     gravityField.resize(width, std::vector<GravitySample>(height));
 }
@@ -229,6 +229,7 @@ void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineTh
 }
 
 void PlanetSystem::drawField(Camera2D camera) {
+    // Flow field
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             Vector2 position = (Vector2){ (float)(x * SAMPLE_DISTANCE), (float)(y * SAMPLE_DISTANCE) };
@@ -240,8 +241,12 @@ void PlanetSystem::drawField(Camera2D camera) {
         }
     }
 
+    // Gravity at mouse
     Vector2 position = GetScreenToWorld2D(GetMousePosition(), camera);
     DrawArrow(position, Vector2Add(position, gravityAt(position) * 1000), 6, 2, GREEN);
+
+    // Boundary
+    DrawRectangleLines(0, 0, width * SAMPLE_DISTANCE, height * SAMPLE_DISTANCE, GRAY);
 }
 
 void PlanetSystem::draw() {

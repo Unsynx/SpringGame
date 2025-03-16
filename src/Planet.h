@@ -52,6 +52,7 @@ private:
     static constexpr float GRAVITY_CONSTANT = 0.00005f;
     int width = 100;
     int height = 100;
+    Vector2 systemCenter;
     std::vector<Planet> planets;
     std::vector<std::vector<GravitySample>> gravityField;
 public:

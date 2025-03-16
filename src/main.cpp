@@ -12,13 +12,13 @@ int main()
 	SetTargetFPS(60);
 
 	Camera2D camera = { 0 };
-	camera.zoom = 1.0f;
+	camera.zoom = 0.2f;
 	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
 
 	PlanetSystem planetSystem;
 	planetSystem.computeField();
 
-	Player player(planetSystem, camera, (Vector2){ 150.0f, 150.0f });
+	Player player(planetSystem, camera, (Vector2){ 1300.0f, 1300.0f });
 	
 	while (!WindowShouldClose()) {
 		// Update
