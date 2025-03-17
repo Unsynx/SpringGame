@@ -3,9 +3,60 @@
 #include <cstdlib>
 #include <cmath>
 #include <vector>
+#include <random>
 
 
 #include "Planet.h"
+
+// ----------- Helper Functions -----------
+
+// Returns a random point inside the triangle formed by A, B, and C
+Vector2 pointOnTriangle(const Vector2& pt1, const Vector2& pt2, const Vector2& pt3) {
+    // this function doesn't seem to work
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+    // Generate two random values and sort them
+    float x = dist(gen);
+    float y = dist(gen);
+    if (x > y) std::swap(x, y);
+
+    float s = x;
+    float t = y - x;
+    float u = 1.0f - y;
+
+    // Compute the final random point inside the triangle
+    return (Vector2){
+        s * pt1.x + t * pt2.x + u * pt3.x,
+        s * pt1.y + t * pt2.y + u * pt3.y
+    };
+}
+
+void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineThickness = 2.0f, Color color = BLACK) {
+    // Draw main line
+    DrawLineEx(start, end, lineThickness, color);
+
+    // Calculate direction
+    Vector2 direction = Vector2Subtract(end, start);
+    float length = Vector2Length(direction);
+    if (length == 0) return;  // Avoid division by zero
+
+    direction = Vector2Scale(direction, 1.0f / length); // Normalize
+
+    // Calculate arrowhead base position (a bit before the end)
+    Vector2 arrowBase = Vector2Add(end, Vector2Scale(direction, -arrowSize));
+
+    // Perpendicular direction for arrowhead
+    Vector2 perp = { -direction.y, direction.x };
+
+    // Calculate arrowhead points
+    Vector2 arrowLeft = Vector2Add(arrowBase, Vector2Scale(perp, arrowSize * 0.5f));
+    Vector2 arrowRight = Vector2Subtract(arrowBase, Vector2Scale(perp, arrowSize * 0.5f));
+
+    // Draw arrowhead
+    DrawTriangle(end, arrowRight, arrowLeft, color);
+}
 
 // ----------- Planet -----------
 
@@ -21,6 +72,22 @@ Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
 
     nodePositions.resize(nodeCount);
     updateNodePositions();
+
+    oreDepots.resize(1);
+    OreDeposit depot;
+    depot.centerNode = 5;
+    depot.depth = 50;
+    depot.spread = 3;
+    depot.positions.resize(10);
+    for (int i = 0; i < 10; i++) {
+        Vector2 centerDirection = Vector2Normalize(Vector2Subtract(getPosition(), nodePositions[depot.centerNode]));
+        depot.positions[i] = pointOnTriangle(
+            Vector2Add(nodePositions[depot.centerNode], Vector2Scale(centerDirection, depot.depth)), 
+            nodePositions[depot.centerNode - depot.spread],
+            nodePositions[depot.centerNode + depot.spread]
+        );
+    }
+    oreDepots[0] = depot;
 
     TraceLog(LOG_INFO, "nodeCount: %d", nodeCount);
 }
@@ -42,26 +109,16 @@ void Planet::updateNodePositions() {
 }
 
 void Planet::draw() {
-    // Draw the triangle fan with the given color
+    for (OreDeposit depot : oreDepots) {
+        Vector2 mainNodePos = nodePositions[depot.centerNode];
+        DrawCircle(mainNodePos.x, mainNodePos.y, 10, BLUE);
+        for (Vector2 position: depot.positions) {
+            DrawCircle(position.x, position.y, 5, BLUE);
+        }
+    }
+
+    // Planet Surface
     DrawTriangleFan(nodePositions.data(), nodeCount, RED);
-
-    /*
-    Vector2 node = getNodePosition(0);
-    DrawCircle(node.x, node.y, 5, GREEN);
-    DrawText("0", node.x, node.y, 16, BLACK);
-
-    node = getNodePosition(1);
-    DrawCircle(node.x, node.y, 5, BLUE);
-    DrawText("1", node.x, node.y, 16, BLACK);
-
-    node = getNodePosition(2);
-    DrawCircle(node.x, node.y, 5, YELLOW);
-    DrawText("2", node.x, node.y, 16, BLACK);
-
-    node = getNodePosition(nodeCount);
-    DrawCircle(node.x, node.y, 5, BLUE);
-    DrawText("nodeCount", node.x, node.y, 16, BLACK);
-    */
 }
 
 void Planet::changeOffset(int node, int change) {
@@ -201,31 +258,6 @@ Vector2 PlanetSystem::gravityAt(Vector2 position) {
     Vector2 gravity = Vector2Lerp(gTop, gBottom, ty);  // Final interpolation
 
     return gravity;
-}
-
-void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineThickness = 2.0f, Color color = BLACK) {
-    // Draw main line
-    DrawLineEx(start, end, lineThickness, color);
-
-    // Calculate direction
-    Vector2 direction = Vector2Subtract(end, start);
-    float length = Vector2Length(direction);
-    if (length == 0) return;  // Avoid division by zero
-
-    direction = Vector2Scale(direction, 1.0f / length); // Normalize
-
-    // Calculate arrowhead base position (a bit before the end)
-    Vector2 arrowBase = Vector2Add(end, Vector2Scale(direction, -arrowSize));
-
-    // Perpendicular direction for arrowhead
-    Vector2 perp = { -direction.y, direction.x };
-
-    // Calculate arrowhead points
-    Vector2 arrowLeft = Vector2Add(arrowBase, Vector2Scale(perp, arrowSize * 0.5f));
-    Vector2 arrowRight = Vector2Subtract(arrowBase, Vector2Scale(perp, arrowSize * 0.5f));
-
-    // Draw arrowhead
-    DrawTriangle(end, arrowRight, arrowLeft, color);
 }
 
 void PlanetSystem::drawField(Camera2D camera) {

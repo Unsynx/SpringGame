@@ -17,6 +17,14 @@ struct Segment {
     Vector2 node2;
 };
 
+struct OreDeposit {
+    int centerNode;
+    int depth;
+    int spread;
+    bool mainNodeVisible = true;
+    std::vector<Vector2> positions;
+};
+
 class Planet {
 private:
     static const int NODE_PER_SURFACE_LENGTH = 15;
@@ -26,6 +34,9 @@ private:
     std::vector<Vector2> nodePositions;
     int baseSize;
     Vector2 position;
+
+    // Decorations
+    std::vector<OreDeposit> oreDepots;
 public:
     Planet() : baseSize(0), position({0, 0}) {}; // empty planet
     Planet(int size, Vector2 position);
