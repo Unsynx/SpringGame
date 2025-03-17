@@ -2,8 +2,11 @@
 #include <raymath.h>
 #include <string>
 
-#include "Planet.h"
-#include "Player.h"
+#include "SceneManager.h"
+#include "Game.cpp"
+#include "MainMenu.cpp"
+
+SceneManager SCENE_MANAGER;
 
 int main()
 {
@@ -11,37 +14,21 @@ int main()
 	InitWindow(480, 360, "Nik's Game");
 	SetTargetFPS(60);
 
-	Camera2D camera = { 0 };
-	camera.zoom = 1.0f;
-	camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
-
-	PlanetSystem planetSystem;
-	planetSystem.computeField();
-
-	Player player(planetSystem, camera, (Vector2){ 1300.0f, 1300.0f });
+	SCENE_MANAGER.addScene(std::make_unique<GameScene>());
+	SCENE_MANAGER.addScene(std::make_unique<MainMenuScene>());
+	SCENE_MANAGER.setActiveScene("Game");
 	
 	while (!WindowShouldClose()) {
 		// Update
-		player.update();
+		SCENE_MANAGER.update();
 
 		// Rendering
 		BeginDrawing();
-			ClearBackground(RAYWHITE);
-			
-			// Camera
-			BeginMode2D(camera);
-				planetSystem.drawField(camera);
-				planetSystem.draw();
-				player.draw();
-				
-			EndMode2D();
-
-			// UI
-			DrawFPS(12, 12);
-			Vector2 playerPos = player.getPosition();
-			DrawText(TextFormat("Player: %f %f", playerPos.x, playerPos.y), 12, 36, 16, BLACK);
-
+			SCENE_MANAGER.draw();
 		EndDrawing();
+
+		// Scene changes handled
+		SCENE_MANAGER.handleSceneChanges();
 	}
 
 	CloseWindow();
