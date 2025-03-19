@@ -93,6 +93,7 @@ Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
 }
 
 void Planet::updateNodePositions() {
+    // Update surface
     nodePositions[0] = position;
     float angle = 0;
     float changeInDeg = 360 / (float)(nodeCount - 2);
@@ -106,14 +107,24 @@ void Planet::updateNodePositions() {
     }
 
     nodePositions[nodeCount - 1] = nodePositions[1];
+
+    // Check ores
+    for (OreDeposit& depot : oreDepots) {  // Use reference to modify elements
+        for (int i = depot.positions.size() - 1; i >= 0; i--) {  // Iterate backwards
+            if (!isColliding(depot.positions[i])) {
+                // Add additional ore logic
+                depot.positions.erase(depot.positions.begin() + i);
+            }
+        }
+    }
 }
 
 void Planet::draw() {
     for (OreDeposit depot : oreDepots) {
         Vector2 mainNodePos = nodePositions[depot.centerNode];
-        DrawCircle(mainNodePos.x, mainNodePos.y, 10, BLUE);
+        DrawCircle(mainNodePos.x, mainNodePos.y, 5, BLUE);
         for (Vector2 position: depot.positions) {
-            DrawCircle(position.x, position.y, 5, BLUE);
+            DrawCircle(position.x, position.y, 15, BLUE);
         }
     }
 
@@ -123,7 +134,7 @@ void Planet::draw() {
 
 void Planet::changeOffset(int node, int change) {
     nodeOffsets[node] = fmax(nodeOffsets[node] + change, CORE_SIZE - baseSize);
-    updateNodePositions();
+    updateNodePositions(); // Shouldn't call this function everytiem something is changed, rather should be called only once at the end of all changes
 }
 
 Orientation Planet::planetToWorldCords(float planetPos) {
