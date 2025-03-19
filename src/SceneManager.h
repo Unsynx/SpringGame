@@ -29,6 +29,7 @@ private:
 
 public:
     SceneManager() = default;
+
     void addScene(std::unique_ptr<Scene> scene) {
         std::string name = scene->getName();
         scenes[name] = std::move(scene);
@@ -55,6 +56,11 @@ public:
     void draw() {
         if (sceneNotExists(currentScene)) return;
         scenes[currentScene]->draw();
+    }
+
+    Scene* getCurrentScene() {
+        if (sceneNotExists(currentScene)) return nullptr;
+        return scenes[currentScene].get();
     }
 
     void handleSceneChanges() { currentScene = targetScene; }

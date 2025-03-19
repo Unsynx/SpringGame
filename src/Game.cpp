@@ -11,6 +11,7 @@ class GameScene : public Scene {
         Camera2D camera = { 0 };
         PlanetSystem planetSystem;
         Player player = {planetSystem, camera, (Vector2){ 1300.0f, 1300.0f }};
+        int points = 0;
     public:
         GameScene() : Scene("Game") {
             camera.zoom = 1.0f;
@@ -38,5 +39,7 @@ class GameScene : public Scene {
 			Vector2 playerPos = player.getPosition();
 			DrawText(TextFormat("Player: %f %f", playerPos.x, playerPos.y), 12, 36, 16, BLACK);
             DrawText("Press M", 12, 50, 16, BLACK);
+            DrawText(TextFormat("Current Points: %i", points), 12, 50, 16, BLACK);
         }
+        void addPoints(int value) { points = points + value; };
 };

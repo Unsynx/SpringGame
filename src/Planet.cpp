@@ -7,6 +7,8 @@
 
 
 #include "Planet.h"
+#include "SceneManager.h"
+#include "Game.cpp"
 
 // ----------- Helper Functions -----------
 
@@ -81,23 +83,30 @@ Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
     nodePositions.resize(nodeCount);
     updateNodePositions();
 
-    oreDepots.resize(1);
-    OreDeposit depot;
-    depot.centerNode = 1;
-    depot.depth = 50;
-    depot.spread = 3;
-    depot.positions.resize(10);
-    for (int i = 0; i < 10; i++) {
-        Vector2 centerDirection = Vector2Normalize(Vector2Subtract(getPosition(), getNodePositionSafe(depot.centerNode)));
-        depot.positions[i] = pointOnTriangle(
-            Vector2Add(getNodePositionSafe(depot.centerNode), Vector2Scale(centerDirection, depot.depth)), 
-            getNodePositionSafe(depot.centerNode - depot.spread),
-            getNodePositionSafe(depot.centerNode + depot.spread)
-        );
-    }
-    oreDepots[0] = depot;
+    // Ore generation
+    std::random_device rd;
+    std::mt19937 gen(rd()); // Mersenne Twister engine
+    std::uniform_int_distribution<> dis(1, nodeCount - 2); // Range from 1 to nodeCount
 
-    TraceLog(LOG_INFO, "nodeCount: %d", nodeCount);
+    int oreDepotCount = (nodeCount - 2) / ORE_PER_NODES;
+    oreDepots.resize(oreDepotCount);
+    for (int i = 0; i < oreDepotCount; i++) {
+        OreDeposit depot;
+        depot.centerNode = dis(gen);
+        depot.centerNodeStart = nodePositions[depot.centerNode];
+        depot.depth = 50;
+        depot.spread = 3;
+        depot.positions.resize(10);
+        for (int i = 0; i < 10; i++) {
+            Vector2 centerDirection = Vector2Normalize(Vector2Subtract(getPosition(), getNodePositionSafe(depot.centerNode)));
+            depot.positions[i] = pointOnTriangle(
+                Vector2Add(getNodePositionSafe(depot.centerNode), Vector2Scale(centerDirection, depot.depth)), 
+                getNodePositionSafe(depot.centerNode - depot.spread),
+                getNodePositionSafe(depot.centerNode + depot.spread)
+            );
+        }
+        oreDepots[i] = depot;
+    }
 }
 
 void Planet::updateNodePositions() {
@@ -116,11 +125,17 @@ void Planet::updateNodePositions() {
 
     nodePositions[nodeCount - 1] = nodePositions[1];
 
+    GameScene* game = dynamic_cast<GameScene*>(SCENE_MANAGER.getCurrentScene());
+
     // Check ores
     for (OreDeposit& depot : oreDepots) {  // Use reference to modify elements
         for (int i = depot.positions.size() - 1; i >= 0; i--) {  // Iterate backwards
+            if (depot.mainNodeVisible && depot.centerNodeStart != nodePositions[depot.centerNode]) {
+                depot.mainNodeVisible = false;
+                game->addPoints(5);
+            }
             if (!isColliding(depot.positions[i])) {
-                // Add additional ore logic
+                game->addPoints(1);
                 depot.positions.erase(depot.positions.begin() + i);
             }
         }
@@ -130,7 +145,7 @@ void Planet::updateNodePositions() {
 void Planet::draw() {
     for (OreDeposit depot : oreDepots) {
         Vector2 mainNodePos = nodePositions[depot.centerNode];
-        DrawCircle(mainNodePos.x, mainNodePos.y, 5, BLUE);
+        if (depot.mainNodeVisible) DrawCircle(mainNodePos.x, mainNodePos.y, 15, YELLOW);
         for (Vector2 position: depot.positions) {
             DrawCircle(position.x, position.y, 15, BLUE);
         }
