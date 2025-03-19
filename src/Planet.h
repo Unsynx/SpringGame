@@ -46,6 +46,7 @@ public:
     Orientation planetToWorldCords(float planetPos);
     Segment getHoveredSegment(Vector2 worldMousePosition);
     Vector2 getNodePosition(int node) { return nodePositions[node]; };
+    Vector2 getNodePositionSafe(int node);
     Vector2 getPosition() { return position; }
     bool isColliding(Vector2 point);
     Vector2 getSurfaceNormal(Vector2 point);

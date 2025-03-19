@@ -60,6 +60,14 @@ void DrawArrow(Vector2 start, Vector2 end, float arrowSize = 10.0f, float lineTh
 
 // ----------- Planet -----------
 
+Vector2 Planet::getNodePositionSafe(int node) {
+    // Map node to the range [0, nodeCount-3]
+    node = ((node % (nodeCount - 2)) + (nodeCount - 2)) % (nodeCount - 2); // Correct negative modulus
+    if (node == 0) node = 1; // Ensure node is not zero
+
+    return nodePositions[node];
+}
+
 Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
     float circumCircle = 2 * PI * baseSize;
     nodeCount = circumCircle / NODE_PER_SURFACE_LENGTH;
@@ -75,16 +83,16 @@ Planet::Planet(int size, Vector2 position): baseSize(size), position(position) {
 
     oreDepots.resize(1);
     OreDeposit depot;
-    depot.centerNode = 5;
+    depot.centerNode = 1;
     depot.depth = 50;
     depot.spread = 3;
     depot.positions.resize(10);
     for (int i = 0; i < 10; i++) {
-        Vector2 centerDirection = Vector2Normalize(Vector2Subtract(getPosition(), nodePositions[depot.centerNode]));
+        Vector2 centerDirection = Vector2Normalize(Vector2Subtract(getPosition(), getNodePositionSafe(depot.centerNode)));
         depot.positions[i] = pointOnTriangle(
-            Vector2Add(nodePositions[depot.centerNode], Vector2Scale(centerDirection, depot.depth)), 
-            nodePositions[depot.centerNode - depot.spread],
-            nodePositions[depot.centerNode + depot.spread]
+            Vector2Add(getNodePositionSafe(depot.centerNode), Vector2Scale(centerDirection, depot.depth)), 
+            getNodePositionSafe(depot.centerNode - depot.spread),
+            getNodePositionSafe(depot.centerNode + depot.spread)
         );
     }
     oreDepots[0] = depot;
