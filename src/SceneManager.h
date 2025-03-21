@@ -1,19 +1,35 @@
 #pragma once
 
+#include <raylib.h>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <memory>
 
+enum SceneType {
+    STANDARD,
+    DELETE_ON_CLOSE
+};
+
 class Scene {
 private:
     std::string name;
+    SceneType type;
 public:
-    Scene(std::string name) : name(std::move(name)) {}
+    Scene(std::string name, SceneType type = STANDARD) : name(std::move(name)), type(type) {}
     virtual ~Scene() = default; // Ensure proper cleanup for derived classes
     std::string getName() const { return name; }
+    SceneType getType() const { return type; }
     virtual void update() {}
     virtual void draw() {}
+    virtual void onClose() { 
+        std::string logMessage = "Closed " + name;
+        TraceLog(LOG_INFO, logMessage.c_str()); 
+    }
+    virtual void onOpen() {
+        std::string logMessage = "Opened " + name;
+        TraceLog(LOG_INFO, logMessage.c_str()); 
+    }
 };
 
 class SceneManager {
@@ -63,7 +79,15 @@ public:
         return scenes[currentScene].get();
     }
 
-    void handleSceneChanges() { currentScene = targetScene; }
+    void handleSceneChanges() { 
+        if (currentScene == targetScene) return;
+        if (!sceneNotExists(currentScene)) {
+            getCurrentScene()->onClose();
+            //if (getCurrentScene()->getType() == DELETE_ON_CLOSE) removeScene(currentScene);
+        }
+        currentScene = targetScene; 
+        getCurrentScene()->onOpen();
+    }
 };
 
 extern SceneManager SCENE_MANAGER;

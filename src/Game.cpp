@@ -13,7 +13,7 @@ class GameScene : public Scene {
         Player player = {planetSystem, camera, (Vector2){ 1300.0f, 1300.0f }};
         int points = 0;
     public:
-        GameScene() : Scene("Game") {
+        GameScene() : Scene("Game", DELETE_ON_CLOSE) {
             camera.zoom = 1.0f;
             camera.offset = (Vector2){ (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
         
