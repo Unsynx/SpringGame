@@ -8,7 +8,8 @@
 
 class MainMenuScene : public Scene {
     private:
-
+        int lastScore;
+        int highScore;
     public:
         MainMenuScene() : Scene("Main Menu") {}
         void update() override { 
@@ -21,5 +22,8 @@ class MainMenuScene : public Scene {
         }
         void onOpen() override {
             SCENE_MANAGER.addScene(std::make_unique<GameScene>());
+        }
+        void setLastScore(int score) {
+            lastScore = score;
         }
 };

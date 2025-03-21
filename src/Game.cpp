@@ -14,6 +14,7 @@ class GameScene : public Scene {
         PlanetSystem planetSystem;
         Player player = {planetSystem, camera, (Vector2){ 1300.0f, 1300.0f }};
         int points = 0;
+        float timer = 20;
     public:
         GameScene() : Scene("Game", DELETE_ON_CLOSE) {
             camera.zoom = 1.0f;
@@ -24,6 +25,11 @@ class GameScene : public Scene {
         void update() override { 
             if (IsKeyDown(KEY_M)) SCENE_MANAGER.setActiveScene("Main Menu");
             player.update();
+            timer = timer - GetFrameTime();
+            if (timer < 0) {
+                SCENE_MANAGER.setActiveScene("Main Menu");
+                timer = 0;
+            }
         }
         void draw() override {
             ClearBackground(RAYWHITE);
@@ -37,11 +43,13 @@ class GameScene : public Scene {
 			EndMode2D();
 
 			// UI
-			DrawFPS(12, 12);
-			Vector2 playerPos = player.getPosition();
-			DrawText(TextFormat("Player: %f %f", playerPos.x, playerPos.y), 12, 36, 16, BLACK);
-            DrawText("Press M", 12, 50, 16, BLACK);
-            DrawText(TextFormat("Current Points: %i", points), 12, 50, 16, BLACK);
+			DrawText("Time Left:", 12, 12, 16, BLACK);
+            DrawText(TextFormat("%.2f", timer), 12, 30, 28, BLACK);
+            DrawText("Points:", 12, 60, 16, BLACK);
+            DrawText(TextFormat("%i", points), 12, 78, 28, BLACK);
         }
         void addPoints(int value) { points = points + value; };
+        void onClose() override {
+            
+        }
 };

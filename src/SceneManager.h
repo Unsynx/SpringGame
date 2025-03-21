@@ -79,6 +79,11 @@ public:
         return scenes[currentScene].get();
     }
 
+    Scene* getScene(std::string name) {
+        if (sceneNotExists(name)) return nullptr;
+        return scenes[name].get();
+    }
+
     void handleSceneChanges() { 
         if (currentScene == targetScene) return;
         if (!sceneNotExists(currentScene)) {
