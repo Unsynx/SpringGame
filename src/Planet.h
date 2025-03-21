@@ -29,7 +29,7 @@ struct OreDeposit {
 class Planet {
 private:
     static const int NODE_PER_SURFACE_LENGTH = 15;
-    static const int CORE_SIZE = 20;
+    static const int CORE_SIZE = 51;
     static const int ORE_PER_NODES = 10;
     int nodeCount;
     std::vector<int> nodeOffsets;

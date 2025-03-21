@@ -145,7 +145,7 @@ void Planet::updateNodePositions() {
 void Planet::draw() {
     for (OreDeposit depot : oreDepots) {
         Vector2 mainNodePos = nodePositions[depot.centerNode];
-        if (depot.mainNodeVisible) DrawCircle(mainNodePos.x, mainNodePos.y, 16, BLUE);
+        if (depot.mainNodeVisible) DrawCircle(mainNodePos.x, mainNodePos.y, 1, BLUE);
         for (Vector2 position: depot.positions) {
             DrawCircle(position.x, position.y, 8, BLUE);
         }
@@ -160,7 +160,8 @@ void Planet::draw() {
 }
 
 void Planet::changeOffset(int node, int change) {
-    nodeOffsets[node] = fmax(nodeOffsets[node] + change, CORE_SIZE - baseSize);
+    nodeOffsets[node] = nodeOffsets[node] + change;
+    if (nodeOffsets[node] < -CORE_SIZE) nodeOffsets[node] = -CORE_SIZE;
     updateNodePositions(); // Shouldn't call this function everytiem something is changed, rather should be called only once at the end of all changes
 }
 
