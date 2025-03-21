@@ -13,7 +13,7 @@ class GameScene : public Scene {
     private:
         Camera2D camera = { 0 };
         PlanetSystem planetSystem;
-        Player player = {planetSystem, camera, (Vector2){ 1300.0f, 1300.0f }};
+        Player player = {planetSystem, camera, (Vector2){ 1130.0f, 1130.0f }};
         int points = 0;
         float timer = 20;
     public:

@@ -234,7 +234,7 @@ PlanetSystem::PlanetSystem() {
     systemCenter = Vector2Scale((Vector2){ (float)(width * SAMPLE_DISTANCE), (float)(height * SAMPLE_DISTANCE) }, 0.5);
 
     planets.resize(2);
-    planets[0] = Planet(50, Vector2AddValue(systemCenter, 200));
+    planets[0] = Planet(50, Vector2AddValue(systemCenter, -200));
     planets[1] = Planet(150, systemCenter);
 
     gravityField.resize(width, std::vector<GravitySample>(height));
