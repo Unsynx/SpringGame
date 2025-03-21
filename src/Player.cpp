@@ -166,5 +166,5 @@ void Player::draw() {
     // Selection
     Vector2 worldMousePos = GetScreenToWorld2D(GetMousePosition(), camera);
     Segment seg = getPlanet()->getHoveredSegment(worldMousePos);
-    DrawLineEx(seg.node1, seg.node2, 3, BLUE);
+    DrawLineEx(seg.node1, seg.node2, 3, BLACK);
 }

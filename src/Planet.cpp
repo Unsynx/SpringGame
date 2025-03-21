@@ -145,14 +145,18 @@ void Planet::updateNodePositions() {
 void Planet::draw() {
     for (OreDeposit depot : oreDepots) {
         Vector2 mainNodePos = nodePositions[depot.centerNode];
-        if (depot.mainNodeVisible) DrawCircle(mainNodePos.x, mainNodePos.y, 15, YELLOW);
+        if (depot.mainNodeVisible) DrawCircle(mainNodePos.x, mainNodePos.y, 16, BLUE);
         for (Vector2 position: depot.positions) {
-            DrawCircle(position.x, position.y, 15, BLUE);
+            DrawCircle(position.x, position.y, 8, BLUE);
         }
     }
 
     // Planet Surface
     DrawTriangleFan(nodePositions.data(), nodeCount, RED);
+
+    for (int i = 1; i < nodeCount - 1; i++) {
+        DrawLineEx(nodePositions[i], nodePositions[i + 1], 3, (Color){ 230, 80, 95, 255 });
+    }
 }
 
 void Planet::changeOffset(int node, int change) {
