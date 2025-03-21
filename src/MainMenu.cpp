@@ -13,7 +13,7 @@ class MainMenuScene : public Scene {
         }
         void draw() override {
             ClearBackground(RAYWHITE);
-			
-            DrawText("Press G", 12, 12, 16, BLACK);
+            DrawText("Untitled Space Game", 12, 12, 42, BLACK);
+            DrawText("Press G", 12, 332, 16, BLACK);
         }
 };
