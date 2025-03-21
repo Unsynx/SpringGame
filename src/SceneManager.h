@@ -8,7 +8,8 @@
 
 enum SceneType {
     STANDARD,
-    DELETE_ON_CLOSE
+    DELETE_ON_CLOSE,
+    DATA_CONTAINER
 };
 
 class Scene {
@@ -53,6 +54,7 @@ public:
     
     void setActiveScene(const std::string& sceneName) {
         if (sceneNotExists(sceneName)) return;
+        if (scenes[sceneName]->getType() == DATA_CONTAINER) return;
         targetScene = sceneName;
     }
 

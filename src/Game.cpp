@@ -1,9 +1,10 @@
 #pragma once
 
 #include "SceneManager.h"
-
 #include <raylib.h>
 #include <raymath.h>
+
+#include "GameData.cpp"
 
 #include "Planet.h"
 #include "Player.h"
@@ -50,6 +51,7 @@ class GameScene : public Scene {
         }
         void addPoints(int value) { points = points + value; };
         void onClose() override {
-            
+            GameDataScene* data = dynamic_cast<GameDataScene*>(SCENE_MANAGER.getScene("Data"));
+            data->setLastScore(points);
         }
 };

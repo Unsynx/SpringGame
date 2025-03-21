@@ -4,6 +4,7 @@
 
 #include "SceneManager.h"
 #include "Game.cpp"
+#include "GameData.cpp"
 #include "MainMenu.cpp"
 
 SceneManager SCENE_MANAGER;
@@ -14,6 +15,7 @@ int main()
 	InitWindow(480, 360, "Nik's Game");
 	SetTargetFPS(60);
 
+	SCENE_MANAGER.addScene(std::make_unique<GameDataScene>());
 	SCENE_MANAGER.addScene(std::make_unique<MainMenuScene>());
 	SCENE_MANAGER.setActiveScene("Main Menu");
 	
