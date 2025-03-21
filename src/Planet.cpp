@@ -315,6 +315,21 @@ void PlanetSystem::drawField(Camera2D camera) {
     DrawRectangleLines(0, 0, width * SAMPLE_DISTANCE, height * SAMPLE_DISTANCE, GRAY);
 }
 
+void PlanetSystem::drawPrettyBackdrop(Camera2D camera) {
+    DrawRectangleLines(0, 0, width * SAMPLE_DISTANCE, height * SAMPLE_DISTANCE, GRAY);
+
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            Vector2 position = (Vector2){ (float)(x * SAMPLE_DISTANCE), (float)(y * SAMPLE_DISTANCE) };
+            GravitySample sample = gravityField[y][x];
+
+            if (Vector2Length(Vector2Subtract(position, camera.target)) < 300) {
+                DrawCircle(position.x, position.y, 2, LIGHTGRAY);
+            }
+        }
+    }
+}
+
 void PlanetSystem::draw() {
     for (Planet planet : planets) {
         planet.draw();

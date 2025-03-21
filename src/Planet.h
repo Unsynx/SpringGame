@@ -74,6 +74,7 @@ public:
     void computeField();
     Vector2 gravityAt(Vector2 position);
     void drawField(Camera2D camera);
+    void drawPrettyBackdrop(Camera2D camera);
     void draw();
     Planet* getNearestPlanet(Vector2 position);
 };

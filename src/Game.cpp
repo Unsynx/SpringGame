@@ -37,7 +37,8 @@ class GameScene : public Scene {
 			
 			// Camera
 			BeginMode2D(camera);
-				planetSystem.drawField(camera);
+				// planetSystem.drawField(camera);
+                planetSystem.drawPrettyBackdrop(camera);
 				planetSystem.draw();
 				player.draw();
 				
