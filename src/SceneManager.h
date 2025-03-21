@@ -83,7 +83,7 @@ public:
         if (currentScene == targetScene) return;
         if (!sceneNotExists(currentScene)) {
             getCurrentScene()->onClose();
-            //if (getCurrentScene()->getType() == DELETE_ON_CLOSE) removeScene(currentScene);
+            if (getCurrentScene()->getType() == DELETE_ON_CLOSE) removeScene(currentScene);
         }
         currentScene = targetScene; 
         getCurrentScene()->onOpen();

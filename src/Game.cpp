@@ -1,3 +1,5 @@
+#pragma once
+
 #include "SceneManager.h"
 
 #include <raylib.h>

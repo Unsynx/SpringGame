@@ -1,7 +1,10 @@
+#pragma once
+
 #include <raylib.h>
 #include <raymath.h>
 
 #include "SceneManager.h"
+#include "Game.cpp"
 
 class MainMenuScene : public Scene {
     private:
@@ -15,5 +18,8 @@ class MainMenuScene : public Scene {
             ClearBackground(RAYWHITE);
             DrawText("Untitled Space Game", 12, 12, 42, BLACK);
             DrawText("Press G", 12, 332, 16, BLACK);
+        }
+        void onOpen() override {
+            SCENE_MANAGER.addScene(std::make_unique<GameScene>());
         }
 };
